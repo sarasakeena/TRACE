@@ -18,11 +18,11 @@ class SignalRecord:
 
     trace_id: str
     step_id: int
-    scorer: str          # "evidence", "consistency", "uncertainty", "policy", "llm"
+    scorer: str          # "evidence", "consistency", "uncertainty", "policy"
     score: float         # risk score in [0.0, 1.0]
     fired_rules: list[str] = field(default_factory=list)
     reason: str = ""
-    source: str = "rule"  # "rule" or "llm"
+    source: str = "rule"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -57,7 +57,7 @@ class TraceResult:
     step_profiles: list[StepRiskProfile] = field(default_factory=list)
     predicted_first_unreliable_step: int | None = None
     predicted_failure_type: str | None = None
-    system: str = "rules_only"  # "rules_only", "llm_only", "hybrid", "baseline"
+    system: str = "trace_monitor"  # "trace_monitor", "baseline"
 
     def to_dict(self) -> dict[str, Any]:
         return {

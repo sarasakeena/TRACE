@@ -8,7 +8,6 @@ Key properties:
   - Causal: step t only considers signals from steps <= t
   - Weighted: different scorers contribute different weights
   - Monotonic: once a step is flagged, downstream steps inherit elevated risk
-  - Rule violations cannot be cleared by the LLM layer
 
 Combiner formula:
   combined_score(step) = Σ(w_scorer * max_signal_from_scorer_at_step)
@@ -18,7 +17,6 @@ Combiner formula:
     consistency:  0.35
     uncertainty:  0.10   (lower because it's a proxy)
     policy:       0.25
-    llm:          bonus  (added on top, never clears rule signals)
 """
 
 from __future__ import annotations
@@ -38,9 +36,6 @@ SCORER_WEIGHTS: dict[str, float] = {
     "uncertainty": 0.10,
     "policy": 0.25,
 }
-
-# LLM bonus weight: when LLM flags something rules missed, add this boost
-LLM_BONUS_WEIGHT = 0.20
 
 # Threshold for flagging a step as "unreliable"
 RISK_THRESHOLD = 0.20
@@ -101,7 +96,7 @@ def combine_signals(
         # Weighted combination
         combined = 0.0
         for scorer, max_score in scorer_max.items():
-            weight = SCORER_WEIGHTS.get(scorer, LLM_BONUS_WEIGHT)
+            weight = SCORER_WEIGHTS.get(scorer, 0.0)
             combined += weight * max_score
 
         # Inherit risk from upstream (monotonic)
