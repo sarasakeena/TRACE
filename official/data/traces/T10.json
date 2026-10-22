@@ -1,0 +1,39 @@
+{
+  "trace_id": "T10",
+  "task": "Calculate the monthly EMI for a home loan of 5,00,000 INR at 9% annual interest for a 5-year tenure.",
+  "domain": "finance",
+  "steps": [
+    {
+      "step_id": 1,
+      "type": "reasoning",
+      "content": "EMI formula: EMI = P * r * (1+r)^n / ((1+r)^n - 1). Here P = 500000, annual rate = 9% so monthly r = 0.09/12 = 0.0075, n = 5*12 = 60 months.",
+      "cites": [],
+      "stated_confidence": 0.95,
+      "probe_score": 0.1
+    },
+    {
+      "step_id": 2,
+      "type": "reasoning",
+      "content": "(1+0.0075)^60 = 1.5657. Numerator = 500000 * 0.0075 * 1.5657 = 5871.38. Denominator = 1.5657 - 1 = 0.5657. EMI = 5871.38 / 0.5657 = 10,379 INR (rounded).",
+      "cites": [1],
+      "stated_confidence": 0.95,
+      "probe_score": 0.12
+    },
+    {
+      "step_id": 3,
+      "type": "reasoning",
+      "content": "Cross-checking: total repayment = 10379 * 60 = 622,740 INR. Interest paid = 122,740 INR. Figures are consistent with a 9% loan.",
+      "cites": [2],
+      "stated_confidence": 0.95,
+      "probe_score": 0.11
+    },
+    {
+      "step_id": 4,
+      "type": "final",
+      "content": "The monthly EMI for a home loan of INR 5,00,000 at 9% per annum for 5 years is INR 13,079.",
+      "cites": [3],
+      "stated_confidence": 0.95,
+      "probe_score": 0.5
+    }
+  ]
+}

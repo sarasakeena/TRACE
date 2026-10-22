@@ -1,0 +1,101 @@
+{
+  "trace_id": "T04",
+  "scenario": "Check whether 20 units of product SKU-7781 (wireless mouse) are in stock and confirm the order if they are.",
+  "category": "consistency",
+  "difficulty": "medium",
+  "held_out": false,
+  "steps": [
+    {
+      "step_id": 0,
+      "type": "reasoning",
+      "content": "I will check stock in both the storefront inventory API and the warehouse database before confirming.",
+      "stated_confidence": 0.85,
+      "probe_score": 0.15
+    },
+    {
+      "step_id": 1,
+      "type": "tool_call",
+      "tool_name": "inventory_api",
+      "tool_input": {
+        "sku": "SKU-7781"
+      },
+      "content": "Check storefront inventory for SKU-7781.",
+      "citations": [
+        0
+      ]
+    },
+    {
+      "step_id": 2,
+      "type": "tool_result",
+      "tool_name": "inventory_api",
+      "tool_output": {
+        "sku": "SKU-7781",
+        "units_in_stock": 24,
+        "last_synced": "2026-10-19"
+      },
+      "content": "{\"sku\": \"SKU-7781\", \"units_in_stock\": 24, \"last_synced\": \"2026-10-19\"}"
+    },
+    {
+      "step_id": 3,
+      "type": "tool_call",
+      "tool_name": "warehouse_db",
+      "tool_input": {
+        "sku": "SKU-7781"
+      },
+      "content": "Check warehouse database for SKU-7781.",
+      "citations": [
+        0
+      ]
+    },
+    {
+      "step_id": 4,
+      "type": "tool_result",
+      "tool_name": "warehouse_db",
+      "tool_output": {
+        "sku": "SKU-7781",
+        "units_in_stock": 0,
+        "last_synced": "2026-10-22"
+      },
+      "content": "{\"sku\": \"SKU-7781\", \"units_in_stock\": 0, \"last_synced\": \"2026-10-22\"}"
+    },
+    {
+      "step_id": 5,
+      "type": "reasoning",
+      "content": "The inventory shows 24 units of SKU-7781 in stock, which covers the 20 requested. I will confirm the order.",
+      "citations": [
+        2
+      ],
+      "stated_confidence": 0.95,
+      "probe_score": 0.55
+    },
+    {
+      "step_id": 6,
+      "type": "tool_call",
+      "tool_name": "order_confirm",
+      "tool_input": {
+        "sku": "SKU-7781",
+        "quantity": 20
+      },
+      "content": "Confirm order of 20 units.",
+      "citations": [
+        5
+      ]
+    },
+    {
+      "step_id": 7,
+      "type": "answer",
+      "content": "Your order for 20 units of SKU-7781 is confirmed. 24 units were in stock.",
+      "citations": [
+        5,
+        6
+      ],
+      "stated_confidence": 0.95,
+      "probe_score": 0.5
+    }
+  ],
+  "ground_truth": {
+    "first_unreliable_step": 5,
+    "failure_type": "consistency",
+    "explanation": "Step 3 (inventory_api, synced 2026-10-19) says 24 units; step 5 (warehouse_db, synced 2026-10-22) says 0. Step 6 cites only step 3 and silently ignores the conflict, then step 7 takes a write action (order_confirm) on that basis."
+  }
+}
