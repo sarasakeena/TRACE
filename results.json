@@ -754,14 +754,14 @@
                   "C1_numerical_mismatch",
                   "C2_status_contradiction"
                 ],
-                "reason": "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says {'shipped'} but agent says {'still being processed', 'not yet shipped', \"hasn't shipped\", 'being processed'}",
+                "reason": "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says ['shipped'] but agent says ['being processed', \"hasn't shipped\", 'not yet shipped', 'still being processed']",
                 "source": "rule"
               }
             ],
             "combined_score": 0.315,
             "dominant_signal": "consistency",
             "reasons": [
-              "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says {'shipped'} but agent says {'still being processed', 'not yet shipped', \"hasn't shipped\", 'being processed'}"
+              "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says ['shipped'] but agent says ['being processed', \"hasn't shipped\", 'not yet shipped', 'still being processed']"
             ]
           },
           {
@@ -788,7 +788,7 @@
                   "C1_numerical_mismatch",
                   "C2_status_contradiction"
                 ],
-                "reason": "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says {'shipped'} but agent says {'not yet shipped', 'being processed'}",
+                "reason": "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says ['shipped'] but agent says ['being processed', 'not yet shipped']",
                 "source": "rule"
               }
             ],
@@ -796,7 +796,7 @@
             "dominant_signal": "consistency",
             "reasons": [
               "Answer makes strong claims without citing evidence steps",
-              "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says {'shipped'} but agent says {'not yet shipped', 'being processed'}"
+              "Tool 'order_tracker' (step 2) has 10.0 but agent says 25.0; Step 2 (order_tracker): Tool says ['shipped'] but agent says ['being processed', 'not yet shipped']"
             ]
           }
         ]
@@ -1038,14 +1038,14 @@
                 "fired_rules": [
                   "C2_status_contradiction"
                 ],
-                "reason": "Step 2 (application_status): Tool says {'pending'} but agent says {'shipped'}",
+                "reason": "Step 2 (application_status): Tool says ['pending'] but agent says ['shipped']",
                 "source": "rule"
               }
             ],
             "combined_score": 0.315,
             "dominant_signal": "consistency",
             "reasons": [
-              "Step 2 (application_status): Tool says {'pending'} but agent says {'shipped'}"
+              "Step 2 (application_status): Tool says ['pending'] but agent says ['shipped']"
             ]
           },
           {
@@ -1072,7 +1072,7 @@
                   "C1_numerical_mismatch",
                   "C2_status_contradiction"
                 ],
-                "reason": "Tool 'application_status' (step 2) has 10.0 but agent says 15.0; Step 2 (application_status): Tool says {'pending', 'pending_review'} but agent says {'approved'}",
+                "reason": "Tool 'application_status' (step 2) has 10.0 but agent says 15.0; Step 2 (application_status): Tool says ['pending', 'pending_review'] but agent says ['approved']",
                 "source": "rule"
               }
             ],
@@ -1080,7 +1080,7 @@
             "dominant_signal": "consistency",
             "reasons": [
               "Answer makes strong claims without citing evidence steps",
-              "Tool 'application_status' (step 2) has 10.0 but agent says 15.0; Step 2 (application_status): Tool says {'pending', 'pending_review'} but agent says {'approved'}"
+              "Tool 'application_status' (step 2) has 10.0 but agent says 15.0; Step 2 (application_status): Tool says ['pending', 'pending_review'] but agent says ['approved']"
             ]
           }
         ]

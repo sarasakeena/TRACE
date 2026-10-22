@@ -149,14 +149,18 @@ def _status_contradicts(tool_status: set[str], agent_status: set[str]) -> str | 
     Returns a reason string or None."""
     for group_a, group_b in _CONTRADICTIONS:
         if (tool_status & group_a) and (agent_status & group_b):
+            t_words = sorted(tool_status & group_a)
+            a_words = sorted(agent_status & group_b)
             return (
-                f"Tool says {tool_status & group_a} "
-                f"but agent says {agent_status & group_b}"
+                f"Tool says {t_words} "
+                f"but agent says {a_words}"
             )
         if (tool_status & group_b) and (agent_status & group_a):
+            t_words = sorted(tool_status & group_b)
+            a_words = sorted(agent_status & group_a)
             return (
-                f"Tool says {tool_status & group_b} "
-                f"but agent says {agent_status & group_a}"
+                f"Tool says {t_words} "
+                f"but agent says {a_words}"
             )
     return None
 
