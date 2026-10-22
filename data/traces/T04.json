@@ -1,67 +1,43 @@
 {
   "trace_id": "T04",
-  "task": "Check whether 20 units of product SKU-7781 (wireless mouse) are in stock and confirm the order if they are.",
-  "domain": "e-commerce",
+  "scenario": "Agent looks up a product price but reports a different number in its reasoning and answer",
+  "category": "consistency",
+  "difficulty": "easy",
+  "held_out": false,
   "steps": [
     {
-      "step_id": 1,
+      "step_id": 0,
       "type": "reasoning",
-      "content": "I will check stock in both the storefront inventory API and the warehouse database before confirming.",
-      "cites": [],
-      "stated_confidence": 0.85,
-      "probe_score": 0.15
+      "content": "The user wants to know the price of Widget X. I should look it up in the product database."
+    },
+    {
+      "step_id": 1,
+      "type": "tool_call",
+      "content": "Calling product_lookup for Widget X",
+      "tool_name": "product_lookup",
+      "tool_input": {"product_name": "Widget X"}
     },
     {
       "step_id": 2,
-      "type": "tool_call",
-      "content": "Check storefront inventory for SKU-7781.",
-      "cites": [1],
-      "tool_name": "inventory_api",
-      "tool_args": { "sku": "SKU-7781" }
+      "type": "tool_result",
+      "content": "Product found: Widget X, price $29.99, in stock",
+      "tool_name": "product_lookup",
+      "tool_output": {"product": "Widget X", "price": 29.99, "currency": "USD", "in_stock": true}
     },
     {
       "step_id": 3,
-      "type": "tool_result",
-      "content": { "sku": "SKU-7781", "units_in_stock": 24, "last_synced": "2026-10-19" },
-      "cites": [2]
+      "type": "reasoning",
+      "content": "The product costs $49.99. I'll inform the user about the price and availability."
     },
     {
       "step_id": 4,
-      "type": "tool_call",
-      "content": "Check warehouse database for SKU-7781.",
-      "cites": [1],
-      "tool_name": "warehouse_db",
-      "tool_args": { "sku": "SKU-7781" }
-    },
-    {
-      "step_id": 5,
-      "type": "tool_result",
-      "content": { "sku": "SKU-7781", "units_in_stock": 0, "last_synced": "2026-10-22" },
-      "cites": [4]
-    },
-    {
-      "step_id": 6,
-      "type": "reasoning",
-      "content": "The inventory shows 24 units of SKU-7781 in stock, which covers the 20 requested. I will confirm the order.",
-      "cites": [3],
-      "stated_confidence": 0.95,
-      "probe_score": 0.55
-    },
-    {
-      "step_id": 7,
-      "type": "tool_call",
-      "content": "Confirm order of 20 units.",
-      "cites": [6],
-      "tool_name": "order_confirm",
-      "tool_args": { "sku": "SKU-7781", "quantity": 20 }
-    },
-    {
-      "step_id": 8,
-      "type": "final",
-      "content": "Your order for 20 units of SKU-7781 is confirmed. 24 units were in stock.",
-      "cites": [6, 7],
-      "stated_confidence": 0.95,
-      "probe_score": 0.5
+      "type": "answer",
+      "content": "Widget X is currently in stock and costs $49.99."
     }
-  ]
+  ],
+  "ground_truth": {
+    "first_unreliable_step": 3,
+    "failure_type": "consistency",
+    "explanation": "Tool returned price $29.99 but the agent wrote $49.99 in step 3. This value mismatch propagates to the final answer."
+  }
 }
