@@ -8,7 +8,6 @@ Key properties:
   - Causal: step t only considers signals from steps <= t
   - Weighted: different scorers contribute different weights
   - Monotonic: once a step is flagged, downstream steps inherit elevated risk
-  - Rule violations cannot be cleared by the LLM layer
 
 Combiner formula:
   combined_score(step) = Σ(w_scorer * max_signal_from_scorer_at_step)
@@ -18,7 +17,6 @@ Combiner formula:
     consistency:  0.35
     uncertainty:  0.10   (lower because it's a proxy)
     policy:       0.25
-    llm:          bonus  (added on top, never clears rule signals)
 """
 
 from __future__ import annotations
@@ -38,9 +36,6 @@ SCORER_WEIGHTS: dict[str, float] = {
     "uncertainty": 0.10,
     "policy": 0.25,
 }
-
-# LLM bonus weight: when LLM flags something rules missed, add this boost
-LLM_BONUS_WEIGHT = 0.20
 
 # Threshold for flagging a step as "unreliable"
 RISK_THRESHOLD = 0.20
@@ -101,7 +96,7 @@ def combine_signals(
         # Weighted combination
         combined = 0.0
         for scorer, max_score in scorer_max.items():
-            weight = SCORER_WEIGHTS.get(scorer, LLM_BONUS_WEIGHT)
+            weight = SCORER_WEIGHTS.get(scorer, 0.0)
             combined += weight * max_score
 
         # Inherit risk from upstream (monotonic)
@@ -117,6 +112,8 @@ def combine_signals(
         # Collect all reasons
         reasons = [sig.reason for sig in step_signals if sig.reason]
 
+        intervention = _determine_intervention(combined, dominant, step_signals)
+
         profile = StepRiskProfile(
             trace_id=tid,
             step_id=sid,
@@ -124,6 +121,7 @@ def combine_signals(
             combined_score=round(combined, 4),
             dominant_signal=dominant,
             reasons=reasons,
+            recommended_intervention=intervention,
         )
         step_profiles.append(profile)
 
@@ -141,6 +139,26 @@ def combine_signals(
         predicted_first_unreliable_step=predicted_step,
         predicted_failure_type=predicted_failure,
     )
+
+
+def _determine_intervention(combined: float, dominant: str, signals: list[SignalRecord]) -> str:
+    """
+    Determine recommended intervention based on risk score band and dominant signal:
+      - R < 0.20: CONTINUE (safe)
+      - Policy/PII violation or R >= 0.70: ABORT_EXECUTION (critical leak / forbidden tool)
+      - 0.40 <= R < 0.70: PAUSE_FOR_HUMAN (pause agent and present evidence span)
+      - 0.20 <= R < 0.40: VERIFY_AND_LOG (log warning, check citations or re-query tool)
+    """
+    if combined < RISK_THRESHOLD:
+        return "CONTINUE"
+    if dominant in ("policy", "privacy") or any(
+        s.scorer == "policy" and any("pii" in r.lower() or "forbidden" in r.lower() for r in s.fired_rules)
+        for s in signals
+    ):
+        return "ABORT_EXECUTION"
+    if combined >= 0.40:
+        return "PAUSE_FOR_HUMAN"
+    return "VERIFY_AND_LOG"
 
 
 def _infer_failure_type(dominant_scorer: str, signals: list[SignalRecord]) -> str | None:

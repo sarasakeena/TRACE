@@ -4,13 +4,11 @@ Main Runner — TRACE Pipeline
 Orchestrates the full scoring pipeline:
   1. Load and validate traces
   2. Run all four rule-based scorers (evidence, consistency, uncertainty, policy)
-  3. Optionally run Layer 2 (LLM)
-  4. Combine signals and predict first unreliable step
-  5. Output results.json
+  3. Combine signals causally and predict first unreliable step
+  4. Output results.json
 
 Usage:
   python -m trace_monitor.run data/traces/ --labels data/labels.json
-  python -m trace_monitor.run data/traces/ --labels data/labels.json --llm
   python -m trace_monitor.run data/traces/ --labels data/labels.json --system baseline
 """
 
@@ -27,7 +25,6 @@ from .evidence_scorer import score_evidence
 from .consistency_scorer import score_consistency
 from .uncertainty_scorer import score_uncertainty
 from .policy_scorer import score_policy
-from .llm_scorer import score_llm
 from .combiner import combine_signals, sweep_thresholds
 from .signals import SignalRecord, TraceResult
 
@@ -115,8 +112,7 @@ def score_baseline(trace: dict[str, Any]) -> TraceResult:
 
 def run_pipeline(
     traces: list[dict[str, Any]],
-    system: str = "rules_only",
-    llm_enabled: bool = False,
+    system: str = "trace_monitor",
     policy_path: str | Path | None = None,
 ) -> list[TraceResult]:
     """
@@ -124,8 +120,7 @@ def run_pipeline(
     
     Args:
         traces: List of trace dicts
-        system: One of "rules_only", "hybrid", "llm_only", "baseline"
-        llm_enabled: Whether to run Layer 2
+        system: One of "trace_monitor" (step-level causal monitoring) or "baseline" (final-answer-only)
         policy_path: Path to policy_rules.yaml
     
     Returns:
@@ -140,23 +135,16 @@ def run_pipeline(
             results.append(score_baseline(trace))
             continue
 
-        # Run rule-based scorers
+        # Run 4 rule-based scorers across all steps
         all_signals: list[SignalRecord] = []
+        all_signals.extend(score_evidence(trace))
+        all_signals.extend(score_consistency(trace))
+        all_signals.extend(score_uncertainty(trace))
+        all_signals.extend(score_policy(trace, policy_path))
 
-        if system in ("rules_only", "hybrid"):
-            all_signals.extend(score_evidence(trace))
-            all_signals.extend(score_consistency(trace))
-            all_signals.extend(score_uncertainty(trace))
-            all_signals.extend(score_policy(trace, policy_path))
-
-        # Run LLM layer
-        if system in ("hybrid", "llm_only"):
-            llm_signals = score_llm(trace, enabled=True)
-            all_signals.extend(llm_signals)
-
-        # Combine
+        # Combine causally
         result = combine_signals(trace, all_signals)
-        result.system = system
+        result.system = "trace_monitor"
         results.append(result)
 
     return results
@@ -185,9 +173,8 @@ def main() -> None:
     parser.add_argument("traces_dir", help="Directory containing trace JSON files")
     parser.add_argument("--labels", help="Path to labels.json")
     parser.add_argument("--policy", help="Path to policy_rules.yaml")
-    parser.add_argument("--system", choices=["rules_only", "hybrid", "llm_only", "baseline"],
-                        default="rules_only", help="Which system to run")
-    parser.add_argument("--llm", action="store_true", help="Enable LLM layer (shortcut for --system hybrid)")
+    parser.add_argument("--system", choices=["trace_monitor", "baseline", "rules_only"],
+                        default="trace_monitor", help="Which system to run (trace_monitor or baseline)")
     parser.add_argument("--output", "-o", default="results.json", help="Output file path")
     parser.add_argument("--validate-only", action="store_true", help="Only validate traces, don't score")
     parser.add_argument("--sweep", action="store_true", help="Run threshold sweep on dev traces")
@@ -223,9 +210,7 @@ def main() -> None:
     print(f"✓ Loaded {len(traces)} traces")
 
     # --- Determine system ---
-    system = args.system
-    if args.llm:
-        system = "hybrid"
+    system = "trace_monitor" if args.system in ("trace_monitor", "rules_only") else "baseline"
 
     # --- Run ---
     print(f"\n🔍 Running system: {system}")

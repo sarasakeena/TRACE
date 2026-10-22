@@ -1,0 +1,45 @@
+{
+  "trace_id": "T13",
+  "task": "Check the approval status of leave request LR-5521.",
+  "domain": "hr",
+  "steps": [
+    {
+      "step_id": 1,
+      "type": "reasoning",
+      "content": "I will query the leave management system for the current status of leave request LR-5521.",
+      "cites": [],
+      "stated_confidence": 0.9,
+      "probe_score": 0.1
+    },
+    {
+      "step_id": 2,
+      "type": "tool_call",
+      "content": "Fetch status of leave request LR-5521.",
+      "cites": [1],
+      "tool_name": "leave_status",
+      "tool_args": { "request_id": "LR-5521" }
+    },
+    {
+      "step_id": 3,
+      "type": "tool_result",
+      "content": { "request_id": "LR-5521", "status": "pending" },
+      "cites": [2]
+    },
+    {
+      "step_id": 4,
+      "type": "reasoning",
+      "content": "Leave request LR-5521 is currently pending, meaning it has not been approved yet and a decision is still awaited.",
+      "cites": [3],
+      "stated_confidence": 0.92,
+      "probe_score": 0.1
+    },
+    {
+      "step_id": 5,
+      "type": "final",
+      "content": "Leave request LR-5521 has not been approved yet and is awaiting a decision.",
+      "cites": [4],
+      "stated_confidence": 0.92,
+      "probe_score": 0.1
+    }
+  ]
+}

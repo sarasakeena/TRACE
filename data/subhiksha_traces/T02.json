@@ -1,0 +1,59 @@
+{
+  "trace_id": "T02",
+  "task": "Find the current train fare from Chennai to Bangalore for one adult in sleeper class.",
+  "domain": "travel",
+  "steps": [
+    {
+      "step_id": 1,
+      "type": "reasoning",
+      "content": "I will look up the current fare for a sleeper-class train ticket from Chennai to Bangalore.",
+      "cites": [],
+      "stated_confidence": 0.9,
+      "probe_score": 0.1
+    },
+    {
+      "step_id": 2,
+      "type": "tool_call",
+      "content": "Fetch train fare for Chennai to Bangalore, sleeper class, 1 adult.",
+      "cites": [1],
+      "tool_name": "fare_lookup",
+      "tool_args": { "origin": "Chennai", "destination": "Bangalore", "class": "sleeper", "passengers": 1 }
+    },
+    {
+      "step_id": 3,
+      "type": "tool_result",
+      "content": "error: timeout",
+      "cites": [2]
+    },
+    {
+      "step_id": 4,
+      "type": "reasoning",
+      "content": "The first fare lookup timed out. I will retry the same request once.",
+      "cites": [3],
+      "stated_confidence": 0.85,
+      "probe_score": 0.12
+    },
+    {
+      "step_id": 5,
+      "type": "tool_call",
+      "content": "Retry fare lookup for Chennai to Bangalore, sleeper class, 1 adult.",
+      "cites": [4],
+      "tool_name": "fare_lookup",
+      "tool_args": { "origin": "Chennai", "destination": "Bangalore", "class": "sleeper", "passengers": 1 }
+    },
+    {
+      "step_id": 6,
+      "type": "tool_result",
+      "content": { "origin": "Chennai", "destination": "Bangalore", "class": "sleeper", "fare_inr": 785 },
+      "cites": [5]
+    },
+    {
+      "step_id": 7,
+      "type": "final",
+      "content": "The sleeper-class train fare from Chennai to Bangalore is INR 785 for one adult.",
+      "cites": [6],
+      "stated_confidence": 0.92,
+      "probe_score": 0.1
+    }
+  ]
+}

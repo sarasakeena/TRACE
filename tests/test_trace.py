@@ -27,7 +27,6 @@ from trace_monitor.consistency_scorer import score_consistency
 from trace_monitor.uncertainty_scorer import score_uncertainty
 from trace_monitor.policy_scorer import score_policy
 from trace_monitor.combiner import combine_signals
-from trace_monitor.llm_scorer import score_llm
 from trace_monitor.signals import SignalRecord
 
 
