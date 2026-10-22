@@ -351,10 +351,10 @@ def generate_failure_analysis(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="TRACE Evaluation — Two-System Comparison")
-    parser.add_argument("--traces", default="data/traces", help="Traces directory")
-    parser.add_argument("--labels", default="data/labels.json", help="Labels file")
-    parser.add_argument("--policy", default=None, help="Policy rules file")
-    parser.add_argument("--output", "-o", default="results.json", help="Output file")
+    parser.add_argument("--traces", default="data/official/traces", help="Traces directory (official 13-trace set; use data/traces for the 6 development examples)")
+    parser.add_argument("--labels", default="data/official/labels.json", help="Labels file")
+    parser.add_argument("--policy", default="data/official/policy_compiled.yaml", help="Policy rules file")
+    parser.add_argument("--output", "-o", default="results_official.json", help="Output file")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--dev-only", action="store_true", help="Only use dev traces")
     parser.add_argument("--held-out-only", action="store_true", help="Only use held-out traces")
