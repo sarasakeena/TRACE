@@ -41,8 +41,8 @@ TITLES = {
     "T13": "'Pending' correctly reported as not approved",
 }
 
-# Only these systems are shown. The LLM layer was removed from the prototype.
-SYSTEM_KEYS = {"rules_only": "T", "baseline": "A"}
+# Active evaluation systems shown in the dashboard.
+SYSTEM_KEYS = {"rules_only": "T", "trace_monitor": "T", "baseline": "A"}
 
 # Intervention table from rules/intervention_rules.md (risk band x dominant signal).
 INTERVENTION = {
@@ -116,7 +116,7 @@ def adapt_monitor_results(raw, labels):
                         "rules": s.get("fired_rules", []),
                         "source": s.get("source", "rule"),
                         "reason": s.get("reason", ""),
-                    } for s in p.get("signals", []) if s.get("scorer") != "llm"],
+                    } for s in p.get("signals", [])],
                 })
             lab = labels.get(tid, {})
             entry = out.setdefault(tid, {"split": lab.get("split", "dev"),

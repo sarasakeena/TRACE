@@ -138,11 +138,11 @@ Each scorer produces a **signal record** per step:
 |-------|------|-------------|
 | `trace_id` | `string` | Which trace |
 | `step_id` | `integer` | Which step |
-| `scorer` | `string` | Which scorer produced this signal (`evidence`, `consistency`, `uncertainty`, `policy`, `llm`) |
+| `scorer` | `string` | Which scorer produced this signal (`evidence`, `consistency`, `uncertainty`, `policy`) |
 | `score` | `float` | Risk score in [0.0, 1.0] |
 | `fired_rules` | `array[string]` | Which specific rules fired |
 | `reason` | `string` | Human-readable explanation |
-| `source` | `string` | `"rule"` or `"llm"` |
+| `source` | `string` | `"rule"` |
 
 ---
 
