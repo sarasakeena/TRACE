@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRACE agent trace",
+  "type": "object",
+  "required": ["trace_id", "task", "domain", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "trace_id": { "type": "string", "pattern": "^T[0-9]{2}$" },
+    "task": { "type": "string", "description": "The user's goal in one sentence. Include today's date if the task depends on it." },
+    "domain": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["step_id", "type", "content", "cites"],
+        "additionalProperties": false,
+        "properties": {
+          "step_id": { "type": "integer", "minimum": 1 },
+          "type": { "enum": ["reasoning", "tool_call", "tool_result", "retrieval", "final"] },
+          "content": {
+            "type": ["string", "object"],
+            "description": "Agent text (string) or tool output (object for structured results, string for errors/plain text)."
+          },
+          "cites": {
+            "type": "array",
+            "items": { "type": "integer" },
+            "description": "Earlier step_ids claimed as evidence. A tool_result cites its tool_call."
+          },
+          "tool_name": { "type": "string", "description": "Required for tool_call steps." },
+          "tool_args": { "type": "object", "description": "Required for tool_call steps." },
+          "stated_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "probe_score": {
+            "type": "number", "minimum": 0, "maximum": 1,
+            "description": "SIMULATED internal-state signal. Not from a real model."
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "tool_call" } } },
+            "then": { "required": ["tool_name", "tool_args"] }
+          }
+        ]
+      }
+    }
+  }
+}

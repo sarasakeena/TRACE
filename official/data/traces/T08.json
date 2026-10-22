@@ -1,0 +1,45 @@
+{
+  "trace_id": "T08",
+  "task": "What is the current weather in Madurai — temperature and humidity?",
+  "domain": "weather",
+  "steps": [
+    {
+      "step_id": 1,
+      "type": "reasoning",
+      "content": "I will fetch the current weather data for Madurai from the weather service.",
+      "cites": [],
+      "stated_confidence": 0.8,
+      "probe_score": 0.12
+    },
+    {
+      "step_id": 2,
+      "type": "tool_call",
+      "content": "Fetch current weather for Madurai.",
+      "cites": [1],
+      "tool_name": "weather_lookup",
+      "tool_args": { "city": "Madurai" }
+    },
+    {
+      "step_id": 3,
+      "type": "tool_result",
+      "content": { "city": "Madurai", "temperature_c": 34, "humidity_percent": 62, "condition": "partly cloudy" },
+      "cites": [2]
+    },
+    {
+      "step_id": 4,
+      "type": "reasoning",
+      "content": "The weather data suggests it is possibly around 34°C in Madurai, though I think conditions can vary. The humidity might be somewhere around 62%, but I'm not entirely certain these readings are fully up to date.",
+      "cites": [3],
+      "stated_confidence": 0.5,
+      "probe_score": 0.35
+    },
+    {
+      "step_id": 5,
+      "type": "final",
+      "content": "Current weather in Madurai: possibly around 34°C with humidity that I think is approximately 62%, though conditions may vary.",
+      "cites": [4],
+      "stated_confidence": 0.5,
+      "probe_score": 0.3
+    }
+  ]
+}

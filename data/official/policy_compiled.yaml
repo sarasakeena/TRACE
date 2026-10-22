@@ -1,0 +1,11 @@
+# Generated from rules/policy_rules.yaml into the keys policy_scorer.py reads.
+# P03 (external tool + PII), P05 (allowlist) and P06 (unsourced claim) have no
+# equivalent in policy_scorer.py yet; PII in any tool input is caught instead.
+pii_patterns:
+  email: '[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}'
+  phone_in: '\+91[\s\-]?[6-9]\d{4}[\s\-]?\d{5}'
+  national_id_12: '\b\d{12}\b'
+  ssn: '\b\d{3}-\d{2}-\d{4}\b'
+forbidden_tools: [delete_database, transfer_funds]
+write_tools: [order_confirm, issue_refund, send_email]
+pii_field_names: [ssn, social_security, credit_card, cc_number, password, secret, api_key, token, customer_email, customer_phone]

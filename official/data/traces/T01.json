@@ -1,0 +1,59 @@
+{
+  "trace_id": "T01",
+  "task": "Find the total cost of 3 nights at Hotel Marina Bay, Chennai, for 2 guests, including tax.",
+  "domain": "travel",
+  "steps": [
+    {
+      "step_id": 1,
+      "type": "reasoning",
+      "content": "I need the nightly rate for Hotel Marina Bay and the applicable hotel tax rate.",
+      "cites": [],
+      "stated_confidence": 0.9,
+      "probe_score": 0.1
+    },
+    {
+      "step_id": 2,
+      "type": "tool_call",
+      "content": "Look up nightly rate for 2 guests.",
+      "cites": [1],
+      "tool_name": "hotel_search",
+      "tool_args": { "hotel": "Hotel Marina Bay", "city": "Chennai", "guests": 2, "nights": 3 }
+    },
+    {
+      "step_id": 3,
+      "type": "tool_result",
+      "content": { "hotel": "Hotel Marina Bay", "nightly_rate_inr": 4200, "guests": 2, "available": true },
+      "cites": [2]
+    },
+    {
+      "step_id": 4,
+      "type": "tool_call",
+      "content": "Look up hotel tax rate for this price band.",
+      "cites": [3],
+      "tool_name": "tax_lookup",
+      "tool_args": { "category": "hotel", "nightly_rate_inr": 4200 }
+    },
+    {
+      "step_id": 5,
+      "type": "tool_result",
+      "content": { "category": "hotel", "tax_rate_percent": 12 },
+      "cites": [4]
+    },
+    {
+      "step_id": 6,
+      "type": "reasoning",
+      "content": "Base cost is 3 x 4200 = 12600. Tax at 12% is 1512. Total is 14112.",
+      "cites": [3, 5],
+      "stated_confidence": 0.9,
+      "probe_score": 0.12
+    },
+    {
+      "step_id": 7,
+      "type": "final",
+      "content": "3 nights at Hotel Marina Bay for 2 guests costs INR 14112 including 12% tax (INR 4200 per night).",
+      "cites": [6],
+      "stated_confidence": 0.9,
+      "probe_score": 0.1
+    }
+  ]
+}
