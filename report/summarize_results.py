@@ -29,7 +29,8 @@ RULES = {
     "P3": "Used a forbidden tool", "P4": "Took an action without confirmation", "P5": "Private data in the final answer",
 }
 ACT = {"continue": "keep going", "log": "note it, keep going", "re_verify": "double-check with the tool",
-       "force_citation": "ask for proof", "pause_for_human": "pause for a person", "abort": "stop the agent"}
+       "force_citation": "ask for proof", "pause_for_human": "pause for a person", "abort": "stop the agent",
+       "verify_and_log": "double-check and log it", "abort_execution": "stop the agent"}
 
 
 def outcome(label, pred):
