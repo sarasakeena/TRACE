@@ -1,0 +1,12 @@
+{
+  "label": "CONTRADICTION",
+  "confidence": 0.85,
+  "evidence_span": "premise contains 'pending' but hypothesis says 'approved'",
+  "reason": "Status mismatch: 'pending' vs 'approved'",
+  "_meta": {
+    "model": "mock-nli-v1",
+    "trace_id": "T11",
+    "step_id": 4,
+    "tool_step_id": 2
+  }
+}

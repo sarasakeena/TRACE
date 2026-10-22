@@ -1,0 +1,46 @@
+{
+  "T04": {
+    "first_unreliable_step": 3,
+    "failure_type": "consistency"
+  },
+  "T05": {
+    "first_unreliable_step": 3,
+    "failure_type": "consistency"
+  },
+  "T06": {
+    "first_unreliable_step": 3,
+    "failure_type": "privacy"
+  },
+  "T07": {
+    "first_unreliable_step": 6,
+    "failure_type": "evidence"
+  },
+  "T08": {
+    "first_unreliable_step": null,
+    "failure_type": null,
+    "held_out": true
+  },
+  "T09": {
+    "first_unreliable_step": 1,
+    "failure_type": "hallucination",
+    "held_out": true
+  },
+  "T10": {
+    "first_unreliable_step": 5,
+    "failure_type": "consistency",
+    "held_out": true
+  },
+  "T11": {
+    "first_unreliable_step": 3,
+    "failure_type": "consistency"
+  },
+  "T12": {
+    "first_unreliable_step": 4,
+    "failure_type": "evidence",
+    "held_out": true
+  },
+  "T13": {
+    "first_unreliable_step": null,
+    "failure_type": null
+  }
+}

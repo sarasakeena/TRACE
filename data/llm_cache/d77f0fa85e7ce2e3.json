@@ -1,0 +1,12 @@
+{
+  "label": "ENTAILMENT",
+  "confidence": 0.7,
+  "evidence_span": "no contradiction detected",
+  "reason": "Hypothesis appears consistent with premise",
+  "_meta": {
+    "model": "mock-nli-v1",
+    "trace_id": "T06",
+    "step_id": 5,
+    "tool_step_id": 2
+  }
+}

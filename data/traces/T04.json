@@ -1,0 +1,43 @@
+{
+  "trace_id": "T04",
+  "scenario": "Agent looks up a product price but reports a different number in its reasoning and answer",
+  "category": "consistency",
+  "difficulty": "easy",
+  "held_out": false,
+  "steps": [
+    {
+      "step_id": 0,
+      "type": "reasoning",
+      "content": "The user wants to know the price of Widget X. I should look it up in the product database."
+    },
+    {
+      "step_id": 1,
+      "type": "tool_call",
+      "content": "Calling product_lookup for Widget X",
+      "tool_name": "product_lookup",
+      "tool_input": {"product_name": "Widget X"}
+    },
+    {
+      "step_id": 2,
+      "type": "tool_result",
+      "content": "Product found: Widget X, price $29.99, in stock",
+      "tool_name": "product_lookup",
+      "tool_output": {"product": "Widget X", "price": 29.99, "currency": "USD", "in_stock": true}
+    },
+    {
+      "step_id": 3,
+      "type": "reasoning",
+      "content": "The product costs $49.99. I'll inform the user about the price and availability."
+    },
+    {
+      "step_id": 4,
+      "type": "answer",
+      "content": "Widget X is currently in stock and costs $49.99."
+    }
+  ],
+  "ground_truth": {
+    "first_unreliable_step": 3,
+    "failure_type": "consistency",
+    "explanation": "Tool returned price $29.99 but the agent wrote $49.99 in step 3. This value mismatch propagates to the final answer."
+  }
+}
