@@ -42,6 +42,7 @@ class StepRiskProfile:
     combined_score: float = 0.0
     dominant_signal: str = ""
     reasons: list[str] = field(default_factory=list)
+    recommended_intervention: str = "CONTINUE"
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
